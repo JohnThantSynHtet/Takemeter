@@ -30,9 +30,9 @@ Examples:
 1. "NO WAY I finally got the shiny!"
 2. "That battle was so annoying. I hate this matchup."
 
-### low_effort_question
+### team_help_question
 
-A post is `low_effort_question` if it asks for help or a decision with very little context.
+A post is `team_help_question` if it asks for help or a decision with very little context.
 
 Examples:
 1. "Who should I recruit?"
@@ -62,7 +62,7 @@ Target label distribution:
 - strategy_advice: about 50 examples
 - hot_take: about 50 examples
 - reaction: about 50 examples
-- low_effort_question: about 50 examples
+- team_help_question: about 50 examples
 
 The dataset will be saved as one CSV file:
 
