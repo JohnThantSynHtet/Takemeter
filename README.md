@@ -27,8 +27,6 @@ Examples:
 1. "Use Tyranitar with Excadrill because Sand Rush gives your team strong speed control in sand."
 2. "Keep Stealth Rock on your team because it pressures switches and breaks Focus Sash."
 
----
-
 ### hot_take
 
 Definition: A post makes a strong opinion or claim with little real evidence.
@@ -38,8 +36,6 @@ Examples:
 1. "Tyranitar is completely overrated and people only use it because it looks cool."
 2. "Competitive Pokémon is mostly luck and barely takes skill."
 
----
-
 ### reaction
 
 Definition: A post mainly expresses emotion, hype, frustration, surprise, or excitement.
@@ -48,8 +44,6 @@ Examples:
 
 1. "NO WAY I finally got the shiny after three days of hunting!"
 2. "I cannot believe Stone Edge missed again."
-
----
 
 ### team_help_question
 
@@ -68,7 +62,7 @@ Dataset size: **200 examples**
 
 The dataset consists of 200 Pokémon-style discussion examples created for this project and manually assigned to one of four discourse categories. The examples were designed to resemble common Pokémon community discourse, including competitive strategy discussion, casual reactions, hot takes, and team-building questions.
 
-The dataset is synthetic/generated rather than scraped from Reddit or another public forum. I used AI assistance to generate Pokémon-style examples, then manually reviewed the examples and labels before using them for training.
+The dataset is synthetic/generated rather than scraped from Reddit or another public forum. AI assistance was used to generate Pokémon-style examples, and all examples and labels were manually reviewed before training.
 
 Columns:
 
@@ -76,25 +70,22 @@ Columns:
 - `label`
 - `notes`
 
-The dataset was balanced evenly across all four labels.
+### Labeling Process
+
+1. Defined four mutually exclusive discourse categories.
+2. Generated Pokémon-style discussion examples representing each category.
+3. Manually reviewed each example and assigned a label.
+4. Balanced the dataset to contain 50 examples per label.
+5. Split the dataset into train, validation, and test sets.
 
 ### Label Distribution
 
 | Label | Count |
-|---------|---------:|
+|---|---:|
 | strategy_advice | 50 |
 | hot_take | 50 |
 | reaction | 50 |
 | team_help_question | 50 |
-
-### Label Distribution
-
-| Label              | Count |
-| ------------------ | ----: |
-| strategy_advice    |    50 |
-| hot_take           |    50 |
-| reaction           |    50 |
-| team_help_question |    50 |
 
 ---
 
@@ -108,18 +99,16 @@ Text:
 
 Possible labels:
 
-* strategy_advice
-* hot_take
+- strategy_advice
+- hot_take
 
 Final label:
 
-* strategy_advice
+- strategy_advice
 
 Reason:
 
 Although the statement sounds opinionated, it provides actionable team-building guidance and explains why utility and recovery are important.
-
----
 
 ### Difficult Example 2
 
@@ -129,18 +118,16 @@ Text:
 
 Possible labels:
 
-* hot_take
-* reaction
+- hot_take
+- reaction
 
 Final label:
 
-* hot_take
+- hot_take
 
 Reason:
 
 The primary purpose is making a strong claim about competitive Pokémon rather than expressing emotion.
-
----
 
 ### Difficult Example 3
 
@@ -150,12 +137,12 @@ Text:
 
 Possible labels:
 
-* team_help_question
-* strategy_advice
+- team_help_question
+- strategy_advice
 
 Final label:
 
-* team_help_question
+- team_help_question
 
 Reason:
 
@@ -171,18 +158,17 @@ I selected DistilBERT because it is lightweight, efficient, and commonly used fo
 
 ### Training Configuration
 
-* Base model: `distilbert-base-uncased`
-* Dataset split:
-
-  * Training: 70%
-  * Validation: 15%
-  * Test: 15%
-* Training examples: 140
-* Validation examples: 30
-* Test examples: 30
-* Epochs: 3
-* Learning rate: 2e-5
-* Batch size: 16
+- Base model: `distilbert-base-uncased`
+- Dataset split:
+  - Training: 70%
+  - Validation: 15%
+  - Test: 15%
+- Training examples: 140
+- Validation examples: 30
+- Test examples: 30
+- Epochs: 3
+- Learning rate: 2e-5
+- Batch size: 16
 
 ---
 
@@ -190,13 +176,11 @@ I selected DistilBERT because it is lightweight, efficient, and commonly used fo
 
 The original project specification requested a Groq `llama-3.3-70b-versatile` zero-shot baseline. I used a local Ollama `llama3.2` zero-shot baseline instead because I did not use a Groq API key.
 
-This means my baseline comparison still tests a zero-shot LLM against the fine-tuned DistilBERT model, but it does not use the exact Groq model named in the original specification.
-
 ### Baseline Configuration
 
-* Platform: Ollama
-* Model: `llama3.2`
-* Classification method: Zero-shot prompting
+- Platform: Ollama
+- Model: `llama3.2`
+- Classification method: Zero-shot prompting
 
 The prompt included all four label definitions and instructed the model to return exactly one label.
 
@@ -206,40 +190,34 @@ The prompt included all four label definitions and instructed the model to retur
 
 ### Overall Accuracy
 
-| Model                     | Accuracy |
-| ------------------------- | -------: |
-| Ollama Zero-Shot Baseline |    0.900 |
-| Fine-Tuned DistilBERT     |    0.533 |
-
----
+| Model | Accuracy |
+|---|---:|
+| Ollama Zero-Shot Baseline | 0.900 |
+| Fine-Tuned DistilBERT | 0.533 |
 
 ### Fine-Tuned DistilBERT Metrics
 
-| Label              | Precision | Recall |   F1 |
-| ------------------ | --------: | -----: | ---: |
-| strategy_advice    |      0.53 |   1.00 | 0.70 |
-| hot_take           |      0.00 |   0.00 | 0.00 |
-| reaction           |      0.53 |   1.00 | 0.70 |
-| team_help_question |      0.00 |   0.00 | 0.00 |
-
----
+| Label | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| strategy_advice | 0.53 | 1.00 | 0.70 |
+| hot_take | 0.00 | 0.00 | 0.00 |
+| reaction | 0.53 | 1.00 | 0.70 |
+| team_help_question | 0.00 | 0.00 | 0.00 |
 
 ### Ollama Baseline Metrics
 
-| Label              | Precision | Recall |   F1 |
-| ------------------ | --------: | -----: | ---: |
-| strategy_advice    |      1.00 |   0.63 | 0.77 |
-| hot_take           |      0.73 |   1.00 | 0.84 |
-| reaction           |      1.00 |   1.00 | 1.00 |
-| team_help_question |      1.00 |   1.00 | 1.00 |
+| Label | Precision | Recall | F1 |
+|---|---:|---:|---:|
+| strategy_advice | 1.00 | 0.63 | 0.77 |
+| hot_take | 0.73 | 1.00 | 0.84 |
+| reaction | 1.00 | 1.00 | 1.00 |
+| team_help_question | 1.00 | 1.00 | 1.00 |
 
 ---
 
-### Confusion Matrix
+## Confusion Matrix
 
 ### Fine-Tuned DistilBERT Confusion Matrix
-
-Rows are true labels. Columns are predicted labels.
 
 | True Label | Predicted strategy_advice | Predicted hot_take | Predicted reaction | Predicted team_help_question |
 |---|---:|---:|---:|---:|
@@ -248,10 +226,11 @@ Rows are true labels. Columns are predicted labels.
 | reaction | 0 | 0 | 8 | 0 |
 | team_help_question | 1 | 0 | 6 | 0 |
 
-The confusion matrix image is also included at:
+The confusion matrix image is included in:
 
-```text
-outputs/confusion_matrix.png
+`outputs/confusion_matrix.png`
+
+---
 
 ## Wrong Prediction Analysis
 
@@ -261,19 +240,13 @@ Text:
 
 "Can this team handle stall?"
 
-True label:
+True label: `team_help_question`
 
-`team_help_question`
-
-Predicted label:
-
-`reaction`
+Predicted label: `reaction`
 
 Analysis:
 
 The model failed to recognize the question as a request for team evaluation and instead associated the short sentence structure with another category.
-
----
 
 ### Wrong Prediction 2
 
@@ -281,19 +254,13 @@ Text:
 
 "Competitive Pokémon is mostly luck and barely takes skill."
 
-True label:
+True label: `hot_take`
 
-`hot_take`
-
-Predicted label:
-
-`strategy_advice`
+Predicted label: `strategy_advice`
 
 Analysis:
 
-The model appears to focus on competitive Pokémon terminology rather than identifying the statement as an unsupported opinion.
-
----
+The model focused on competitive terminology rather than identifying the statement as an unsupported opinion.
 
 ### Wrong Prediction 3
 
@@ -301,13 +268,9 @@ Text:
 
 "What is a good partner for Tyranitar?"
 
-True label:
+True label: `team_help_question`
 
-`team_help_question`
-
-Predicted label:
-
-`reaction`
+Predicted label: `reaction`
 
 Analysis:
 
@@ -315,12 +278,10 @@ The model struggled with short question-based inputs and failed to learn the `te
 
 ---
 
-
-
 ## Sample Classifications
 
 | Text | Predicted Label | Confidence |
-|---------|---------|---------:|
+|---|---|---:|
 | "NO WAY I finally got the shiny after three days of hunting!" | reaction | 0.27 |
 | "Use Tyranitar with Excadrill because Sand Rush gives your team strong speed control in sand." | strategy_advice | 0.28 |
 | "Can this team handle stall?" | reaction | 0.26 |
@@ -328,11 +289,11 @@ The model struggled with short question-based inputs and failed to learn the `te
 
 Correct prediction explanation:
 
-The shiny example was correctly predicted as `reaction` because the text is mainly expressing excitement and celebration rather than giving advice or asking for team help.
+The shiny example was correctly predicted as `reaction` because the text is primarily expressing excitement and celebration.
 
 Incorrect prediction explanation:
 
-"Can this team handle stall?" was incorrectly predicted as `reaction`, even though the true label was `team_help_question`. This shows that the fine-tuned model struggled with short question-based inputs.
+"Can this team handle stall?" was incorrectly predicted as `reaction`, even though the true label was `team_help_question`.
 
 ---
 
@@ -340,11 +301,9 @@ Incorrect prediction explanation:
 
 The fine-tuned DistilBERT model achieved 53.3% accuracy, while the Ollama zero-shot baseline achieved 90.0% accuracy.
 
-The fine-tuned model successfully learned the `strategy_advice` and `reaction` categories but failed to reliably identify `hot_take` and `team_help_question` examples.
+The fine-tuned model successfully learned the `strategy_advice` and `reaction` categories but struggled to identify `hot_take` and `team_help_question` examples. This suggests that the dataset was too small and simplistic for effective fine-tuning, while the larger language model already possessed strong semantic understanding of the categories.
 
-This suggests that the dataset was too small and simplistic for effective fine-tuning, while the larger language model already possessed strong semantic understanding of the categories.
-
-If I continued this project, I would collect a larger dataset with more diverse examples and create more challenging examples between the categories.
+If I continued this project, I would collect a larger dataset with more diverse examples and create more challenging edge cases between the categories.
 
 ---
 
@@ -366,7 +325,7 @@ I used a local Ollama zero-shot baseline instead of the Groq baseline named in t
 2. I used AI assistance to generate the synthetic Pokémon-style discussion examples used in the dataset.
 3. I manually reviewed the generated examples and labels before training.
 4. I used AI assistance to analyze model errors and identify patterns in wrong predictions.
-
+5. I made the final decisions about label definitions, evaluation analysis, and project conclusions.
 
 ---
 
@@ -374,29 +333,26 @@ I used a local Ollama zero-shot baseline instead of the Groq baseline named in t
 
 ### Install Dependencies
 
-
 ```bash
-ollama pull llama3.2
-pip install ollama pandas scikit-learn
-python scripts/ollama_baseline.py
+pip install transformers datasets evaluate torch scikit-learn pandas ollama
+```
 
 ### Fine-Tune DistilBERT
 
 1. Open the provided Google Colab notebook.
-2. Upload:
-
-```text
-data/takemeter_pokemon_dataset.csv
-```
-
+2. Upload `data/takemeter_pokemon_dataset.csv`.
 3. Run Sections 1–4 of the notebook.
-4. Download:
-
-```text
-outputs/confusion_matrix.png
-```
+4. Download `outputs/confusion_matrix.png`.
 
 ### Run Ollama Baseline
+
+Pull the model:
+
+```bash
+ollama pull llama3.2
+```
+
+Run the baseline:
 
 ```bash
 python scripts/ollama_baseline.py
@@ -404,17 +360,15 @@ python scripts/ollama_baseline.py
 
 Results will be saved to:
 
-```text
-outputs/ollama_baseline_results.json
-```
+`outputs/ollama_baseline_results.json`
 
 ### Compare Results
 
 Compare:
 
-* Ollama baseline accuracy
-* Fine-tuned DistilBERT accuracy
-* Per-class precision, recall, and F1 scores
-* Wrong prediction examples
+- Ollama baseline accuracy
+- Fine-tuned DistilBERT accuracy
+- Per-class precision, recall, and F1 scores
+- Wrong prediction examples
 
 to evaluate classification performance.
