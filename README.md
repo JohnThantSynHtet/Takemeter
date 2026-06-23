@@ -66,15 +66,26 @@ Examples:
 
 Dataset size: **200 examples**
 
-The dataset contains Pokémon-related posts and comments.
+The dataset consists of 200 Pokémon-style discussion examples created for this project and manually assigned to one of four discourse categories. The examples were designed to resemble common Pokémon community discourse, including competitive strategy discussion, casual reactions, hot takes, and team-building questions.
+
+The dataset is synthetic/generated rather than scraped from Reddit or another public forum. I used AI assistance to generate Pokémon-style examples, then manually reviewed the examples and labels before using them for training.
 
 Columns:
 
-* `text`
-* `label`
-* `notes`
+- `text`
+- `label`
+- `notes`
 
 The dataset was balanced evenly across all four labels.
+
+### Label Distribution
+
+| Label | Count |
+|---------|---------:|
+| strategy_advice | 50 |
+| hot_take | 50 |
+| reaction | 50 |
+| team_help_question | 50 |
 
 ### Label Distribution
 
@@ -177,7 +188,9 @@ I selected DistilBERT because it is lightweight, efficient, and commonly used fo
 
 ## Baseline Model
 
-The original project specification requested a Groq zero-shot baseline. Instead, I used a local Ollama zero-shot baseline because I did not use a Groq API key.
+The original project specification requested a Groq `llama-3.3-70b-versatile` zero-shot baseline. I used a local Ollama `llama3.2` zero-shot baseline instead because I did not use a Groq API key.
+
+This means my baseline comparison still tests a zero-shot LLM against the fine-tuned DistilBERT model, but it does not use the exact Groq model named in the original specification.
 
 ### Baseline Configuration
 
@@ -222,17 +235,23 @@ The prompt included all four label definitions and instructed the model to retur
 
 ---
 
-## Confusion Matrix
+### Confusion Matrix
 
-See:
+### Fine-Tuned DistilBERT Confusion Matrix
+
+Rows are true labels. Columns are predicted labels.
+
+| True Label | Predicted strategy_advice | Predicted hot_take | Predicted reaction | Predicted team_help_question |
+|---|---:|---:|---:|---:|
+| strategy_advice | 8 | 0 | 0 | 0 |
+| hot_take | 7 | 0 | 0 | 0 |
+| reaction | 0 | 0 | 8 | 0 |
+| team_help_question | 1 | 0 | 6 | 0 |
+
+The confusion matrix image is also included at:
 
 ```text
 outputs/confusion_matrix.png
-```
-
-The confusion matrix shows that the fine-tuned model successfully learned `strategy_advice` and `reaction`, but struggled to distinguish `hot_take` and `team_help_question`.
-
----
 
 ## Wrong Prediction Analysis
 
@@ -296,17 +315,24 @@ The model struggled with short question-based inputs and failed to learn the `te
 
 ---
 
+
+
 ## Sample Classifications
 
-| Text                                                                  | Predicted Label    |
-| --------------------------------------------------------------------- | ------------------ |
-| "NO WAY I finally got the shiny!"                                     | reaction           |
-| "Use Tyranitar with Excadrill because Sand Rush gives speed control." | strategy_advice    |
-| "Should I use Tyranitar or Garchomp?"                                 | team_help_question |
+| Text | Predicted Label | Confidence |
+|---------|---------|---------:|
+| "NO WAY I finally got the shiny after three days of hunting!" | reaction | 0.27 |
+| "Use Tyranitar with Excadrill because Sand Rush gives your team strong speed control in sand." | strategy_advice | 0.28 |
+| "Can this team handle stall?" | reaction | 0.26 |
+| "Competitive Pokémon is mostly luck and barely takes skill." | strategy_advice | 0.28 |
 
 Correct prediction explanation:
 
-These examples clearly match their respective label definitions and demonstrate that the classifier can identify straightforward examples of each category.
+The shiny example was correctly predicted as `reaction` because the text is mainly expressing excitement and celebration rather than giving advice or asking for team help.
+
+Incorrect prediction explanation:
+
+"Can this team handle stall?" was incorrectly predicted as `reaction`, even though the true label was `team_help_question`. This shows that the fine-tuned model struggled with short question-based inputs.
 
 ---
 
@@ -337,9 +363,10 @@ I used a local Ollama zero-shot baseline instead of the Groq baseline named in t
 ## AI Usage
 
 1. I used AI assistance to help design and refine the Pokémon discourse taxonomy.
-2. I used AI assistance to generate and review synthetic Pokémon discussion examples for the dataset.
-3. I used AI assistance to analyze model errors and identify patterns in wrong predictions.
-4. All final labels, project decisions, and evaluation analysis were reviewed manually.
+2. I used AI assistance to generate the synthetic Pokémon-style discussion examples used in the dataset.
+3. I manually reviewed the generated examples and labels before training.
+4. I used AI assistance to analyze model errors and identify patterns in wrong predictions.
+
 
 ---
 
@@ -347,9 +374,11 @@ I used a local Ollama zero-shot baseline instead of the Groq baseline named in t
 
 ### Install Dependencies
 
+
 ```bash
-pip install transformers datasets evaluate torch scikit-learn pandas ollama
-```
+ollama pull llama3.2
+pip install ollama pandas scikit-learn
+python scripts/ollama_baseline.py
 
 ### Fine-Tune DistilBERT
 
