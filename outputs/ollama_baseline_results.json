@@ -1,0 +1,94 @@
+{
+  "baseline_type": "local_ollama_zero_shot",
+  "model": "llama3.2",
+  "accuracy": 0.9,
+  "labels": [
+    "strategy_advice",
+    "hot_take",
+    "reaction",
+    "team_help_question"
+  ],
+  "classification_report": {
+    "strategy_advice": {
+      "precision": 1.0,
+      "recall": 0.625,
+      "f1-score": 0.7692307692307693,
+      "support": 8.0
+    },
+    "hot_take": {
+      "precision": 0.7272727272727273,
+      "recall": 1.0,
+      "f1-score": 0.8421052631578947,
+      "support": 8.0
+    },
+    "reaction": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 7.0
+    },
+    "team_help_question": {
+      "precision": 1.0,
+      "recall": 1.0,
+      "f1-score": 1.0,
+      "support": 7.0
+    },
+    "accuracy": 0.9,
+    "macro avg": {
+      "precision": 0.9318181818181819,
+      "recall": 0.90625,
+      "f1-score": 0.902834008097166,
+      "support": 30.0
+    },
+    "weighted avg": {
+      "precision": 0.9272727272727274,
+      "recall": 0.9,
+      "f1-score": 0.8963562753036437,
+      "support": 30.0
+    }
+  },
+  "confusion_matrix": [
+    [
+      5,
+      3,
+      0,
+      0
+    ],
+    [
+      0,
+      8,
+      0,
+      0
+    ],
+    [
+      0,
+      0,
+      7,
+      0
+    ],
+    [
+      0,
+      0,
+      0,
+      7
+    ]
+  ],
+  "wrong_examples": [
+    {
+      "text": "Avoid four attacking moves on every Pok\u00e9mon because some teams need utility and recovery.",
+      "true_label": "strategy_advice",
+      "predicted_label": "hot_take"
+    },
+    {
+      "text": "Pair Fire types with hazard removal because they dislike Stealth Rock chip damage.",
+      "true_label": "strategy_advice",
+      "predicted_label": "hot_take"
+    },
+    {
+      "text": "Lead with Glimmora when you want early hazards and pressure from Toxic Debris.",
+      "true_label": "strategy_advice",
+      "predicted_label": "hot_take"
+    }
+  ],
+  "test_set_size": 30
+}
